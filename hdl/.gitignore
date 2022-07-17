@@ -1,3 +1,6 @@
+# Build and Test output
+build/
+
 # IDE files
 .bsp/
 .vscode/

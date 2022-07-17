@@ -1,4 +1,4 @@
-ThisBuild / organization := "com.github.ammrat13.pynqz2rambandwidthtester"
+ThisBuild / organization := "com.github.ammrat13.pynqz2ramtester"
 ThisBuild / scalaVersion := "2.13.8"
 
 // SpinalHDL Packages
@@ -12,5 +12,5 @@ val spinalIdslPlugin = compilerPlugin(
 lazy val root = (project in file("."))
   .settings(
     name := "root",
-    libraryDependencies ++= Seq(spinalCore, spinalLib, spinalIdslPlugin)
+    libraryDependencies ++= Seq(spinalCore, spinalLib, spinalIdslPlugin),
   )
