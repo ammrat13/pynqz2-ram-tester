@@ -1,0 +1,14 @@
+# IDE files
+.bsp/
+.vscode/
+
+# SBT files
+target/
+project/target/
+project/project/
+
+# Metals and Bloop
+.metals/
+.bloop/
+project/metals.sbt
+project/.bloop/
