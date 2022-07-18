@@ -46,7 +46,46 @@ class PynqZ2RamTester extends Component {
     * @see
     *   [[PynqZ2RamTester.RAM_CONFIG]]
     */
-  val ram = master(Axi4ReadOnly(PynqZ2RamTester.RAM_CONFIG))
+  val ram = master(Axi4ReadOnly(PynqZ2RamTester.RAM_CONFIG));
+  // Add AXI attributes for Xilinx
+  {
+    ram.ar.ready.addAttribute(
+      "X_INTERFACE_INFO",
+      "xilinx.com:interface:aximm:1.0 axi_ram ARREADY"
+    )
+    ram.ar.valid.addAttribute(
+      "X_INTERFACE_INFO",
+      "xilinx.com:interface:aximm:1.0 axi_ram ARVALID"
+    )
+    ram.ar.payload.addr.addAttribute(
+      "X_INTERFACE_INFO",
+      "xilinx.com:interface:aximm:1.0 axi_ram ARADDR"
+    )
+    ram.ar.payload.len.addAttribute(
+      "X_INTERFACE_INFO",
+      "xilinx.com:interface:aximm:1.0 axi_ram ARLEN"
+    )
+    ram.ar.payload.prot.addAttribute(
+      "X_INTERFACE_INFO",
+      "xilinx.com:interface:aximm:1.0 axi_ram ARPROT"
+    )
+    ram.r.ready.addAttribute(
+      "X_INTERFACE_INFO",
+      "xilinx.com:interface:aximm:1.0 axi_ram RREADY"
+    )
+    ram.r.valid.addAttribute(
+      "X_INTERFACE_INFO",
+      "xilinx.com:interface:aximm:1.0 axi_ram RVALID"
+    )
+    ram.r.payload.data.addAttribute(
+      "X_INTERFACE_INFO",
+      "xilinx.com:interface:aximm:1.0 axi_ram RDATA"
+    )
+    ram.r.payload.last.addAttribute(
+      "X_INTERFACE_INFO",
+      "xilinx.com:interface:aximm:1.0 axi_ram RLAST"
+    )
+  }
   // Some values for the RAM are hard-coded
   // * Accesses are privileged and secure
   // * Burst length is always 16
@@ -57,15 +96,94 @@ class PynqZ2RamTester extends Component {
     * @see
     *   [[PynqZ2RamTester.PS_CONFIG]]
     */
-  val ps = slave(AxiLite4(PynqZ2RamTester.PS_CONFIG))
+  val ps = slave(AxiLite4(PynqZ2RamTester.PS_CONFIG));
+  // Add AXI attributes for Xilinx
+  {
+    ps.ar.ready.addAttribute(
+      "X_INTERFACE_INFO",
+      "xilinx.com:interface:aximm:1.0 axi_ps ARREADY"
+    )
+    ps.ar.valid.addAttribute(
+      "X_INTERFACE_INFO",
+      "xilinx.com:interface:aximm:1.0 axi_ps ARVALID"
+    )
+    ps.ar.payload.addr.addAttribute(
+      "X_INTERFACE_INFO",
+      "xilinx.com:interface:aximm:1.0 axi_ps ARADDR"
+    )
+    ps.ar.payload.prot.addAttribute(
+      "X_INTERFACE_INFO",
+      "xilinx.com:interface:aximm:1.0 axi_ps ARPROT"
+    )
+    ps.r.ready.addAttribute(
+      "X_INTERFACE_INFO",
+      "xilinx.com:interface:aximm:1.0 axi_ps RREADY"
+    )
+    ps.r.valid.addAttribute(
+      "X_INTERFACE_INFO",
+      "xilinx.com:interface:aximm:1.0 axi_ps RVALID"
+    )
+    ps.r.payload.data.addAttribute(
+      "X_INTERFACE_INFO",
+      "xilinx.com:interface:aximm:1.0 axi_ps RDATA"
+    )
+    ps.r.payload.resp.addAttribute(
+      "X_INTERFACE_INFO",
+      "xilinx.com:interface:aximm:1.0 axi_ps RRESP"
+    )
+    ps.aw.valid.addAttribute(
+      "X_INTERFACE_INFO",
+      "xilinx.com:interface:aximm:1.0 axi_ps AWVALID"
+    )
+    ps.aw.ready.addAttribute(
+      "X_INTERFACE_INFO",
+      "xilinx.com:interface:aximm:1.0 axi_ps AWREADY"
+    )
+    ps.aw.payload.addr.addAttribute(
+      "X_INTERFACE_INFO",
+      "xilinx.com:interface:aximm:1.0 axi_ps AWADDR"
+    )
+    ps.aw.payload.prot.addAttribute(
+      "X_INTERFACE_INFO",
+      "xilinx.com:interface:aximm:1.0 axi_ps AWPROT"
+    )
+    ps.w.ready.addAttribute(
+      "X_INTERFACE_INFO",
+      "xilinx.com:interface:aximm:1.0 axi_ps WREADY"
+    )
+    ps.w.valid.addAttribute(
+      "X_INTERFACE_INFO",
+      "xilinx.com:interface:aximm:1.0 axi_ps WVALID"
+    )
+    ps.w.payload.data.addAttribute(
+      "X_INTERFACE_INFO",
+      "xilinx.com:interface:aximm:1.0 axi_ps WDATA"
+    )
+    ps.w.payload.strb.addAttribute(
+      "X_INTERFACE_INFO",
+      "xilinx.com:interface:aximm:1.0 axi_ps WSTRB"
+    )
+    ps.b.ready.addAttribute(
+      "X_INTERFACE_INFO",
+      "xilinx.com:interface:aximm:1.0 axi_ps BREADY"
+    )
+    ps.b.valid.addAttribute(
+      "X_INTERFACE_INFO",
+      "xilinx.com:interface:aximm:1.0 axi_ps BVALID"
+    )
+    ps.b.payload.resp.addAttribute(
+      "X_INTERFACE_INFO",
+      "xilinx.com:interface:aximm:1.0 axi_ps BRESP"
+    )
+  }
   // Easy way to add registers to ps_interface
   private val ps_factory = AxiLite4SlaveFactory(ps)
 
   /** What address we read from
     *
     * Mapped write-only to PS address `0x4000_0000`. Hooked directly to AR on
-    * [[this.ram]]. Will be updated during testing, so don't change it while the
-    * test is running.
+    * [[PynqZ2RamTester.ram]]. Will be updated during testing, so don't change
+    * it while the test is running.
     */
   val cur_addr = {
     // Initialize with a sane initial address - the start of DRAM
