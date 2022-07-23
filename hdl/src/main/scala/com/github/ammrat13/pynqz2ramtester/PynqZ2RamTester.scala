@@ -186,8 +186,8 @@ class PynqZ2RamTester extends Component {
     * it while the test is running.
     */
   val cur_addr = {
-    // Initialize with a sane initial address - the start of DRAM
-    val ret = RegInit(U"x0010_0000")
+    // Initialize with a sane initial address - somewhere in DRAM
+    val ret = RegInit(U"x1000_0000")
     // Updated on write to address 0x4000_0000, and hooked to RAM address
     ps_factory.write(ret, BigInt("40000000", 16))
     ram.ar.payload.addr := ret
@@ -197,12 +197,12 @@ class PynqZ2RamTester extends Component {
 
   /** How many blocks remain to read
     *
-    * Mapped write-only to the PS address `0x4000_0004`. Serves as a counter for
-    * the internal FSM, so don't change it while the test is running.
+    * Mapped read-and-write to the PS address `0x4000_0004`. Serves as a counter
+    * for the internal FSM, so don't change it while the test is running.
     */
   val blocks_rem = {
     val ret = RegInit(U(0, 32 bits))
-    this.ps_factory.write(ret, BigInt("40000004", 16))
+    this.ps_factory.readAndWrite(ret, BigInt("40000004", 16))
     ret
   }
 
@@ -254,16 +254,19 @@ class PynqZ2RamTester extends Component {
     cycles_taken := cycles_taken + 1
 
     // Counter for latency
+    // Increment by default
     val latency = RegInit(U(0, 32 bits))
+    latency := latency + 1
 
     // Idle state
     // When we have blocks to process, go to another state
     val idle: State = new State with EntryPoint {
-      // Don't increment cycles taken
+      // Don't increment cycles taken or latency
       // Wait for blocks_rem to be set to something nonzero
       whenIsActive {
         cycles_taken := cycles_taken
-        when(blocks_rem =/= U(0))(goto(send))
+        latency := latency
+        when(blocks_rem =/= U(0)) { goto(send) }
       }
       // Reset on switch
       onExit {
@@ -276,12 +279,10 @@ class PynqZ2RamTester extends Component {
     // Sends the transaction to RAM
     val send: State = new State {
       // Send transaction to RAM
-      // Remember to increment latency
       whenIsActive {
         ram.ar.valid := True
         ram.ar.payload.addr := cur_addr
-        latency := latency + 1
-        when(ram.ar.ready)(goto(recv))
+        when(ram.ar.ready) { goto(recv) }
       }
       // Update address modulo the mask
       onExit {
@@ -296,23 +297,20 @@ class PynqZ2RamTester extends Component {
       // Wait for the last beat of the transfer
       whenIsActive {
         ram.r.ready := True
-        latency := latency + 1
         when(ram.r.valid && ram.r.payload.last) {
           when(blocks_rem - 1 === U(0)) {
-            exit()
+            goto(idle)
           } otherwise {
             goto(send)
           }
         }
       }
       // Decrement blocks remaining
-      // Update max latency
+      // Reset latency for the next block, and update the max latency
       onExit {
         blocks_rem := blocks_rem - 1
         latency := U(0)
-        when(latency > max_latency) {
-          max_latency := latency
-        }
+        when(latency > max_latency) { max_latency := latency }
       }
     }
   }
