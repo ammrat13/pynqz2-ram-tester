@@ -17,7 +17,7 @@ object Gen extends App {
     targetDirectory = "build/",
     defaultConfigForClockDomains = ClockDomainConfig(
       resetActiveLevel = LOW,
-      softResetActiveLevel = LOW,
-    ),
+      softResetActiveLevel = LOW
+    )
   ).generate(new PynqZ2RamTester)
 }
