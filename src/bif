@@ -1,0 +1,6 @@
+BOOT_BIN:
+{
+    [bootloader] ../xilinx/fsbl.elf
+    ../xilinx/bitstream.bit
+    ./pynqz2-ram-tester.elf
+}

@@ -1,0 +1,7 @@
+# Build output
+*.o
+*.elf
+BOOT.BIN
+
+# IDE files
+.vscode/

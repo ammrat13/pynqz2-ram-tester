@@ -1,0 +1,49 @@
+/*
+    Has a flat memory model consisting of all the DRAM in the system. It puts
+    all the data and code into there, with a preallocated stack of size
+    `_stack_size`.
+*/
+
+ENTRY(_start)
+TARGET(elf32-littlearm)
+
+/* Don't care about OCM */
+MEMORY {
+    dram (rwx): ORIGIN = 0x00100000, LENGTH = 0x20000000 - 0x00100000
+}
+
+/* Single segment for DRAM */
+PHDRS {
+    dram PT_LOAD FLAGS(07);
+}
+
+SECTIONS {
+
+    /* Size of the stack */
+    _stack_size = 1K;
+
+    /* Code */
+    /* We don't need the entrypoint to be the first thing, but we'll do it
+       anyway */
+    .text : ALIGN(4) {
+        *(.text*)
+    } >dram :dram
+
+    /* Data */
+    /* We don't have any NOLOAD sections */
+    .data : ALIGN(4) {
+        *(.data*)
+        *(.bss*)
+    } >dram :dram
+
+    /* Stack */
+    .stack : ALIGN(4) {
+        . = . + _stack_size;
+        _stack_bottom = .;
+    } >dram :dram
+
+    /* No unwinding */
+    /DISCARD/ : {
+        *(.ARM.exidx)
+    }
+}
