@@ -3,7 +3,7 @@ LDSCRIPT := ldscript
 BIF      := bif
 OFILES := \
 	src/startup.o \
-	src/main.o src/uart.o
+	src/main.o src/uart.o src/rand.o
 
 CC := clang --target=arm-none-eabi
 BOOTGEN := bootgen
