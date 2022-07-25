@@ -5,7 +5,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-// Need to print to UART
+#include "mmio.h"
 #include "uart.h"
 
 // Main function

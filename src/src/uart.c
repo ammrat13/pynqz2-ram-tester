@@ -1,14 +1,13 @@
 #include "uart.h"
 
-// MMIO registers we use
-static volatile uint32_t *const UART0_SR   = (volatile uint32_t *) 0xe000002c;
-static volatile uint32_t *const UART0_FIFO = (volatile uint32_t *) 0xe0000030;
-// Bits in those registers
-static const uint32_t UART_SR_TXEMPTY = (1 << 3);
+// Xilinx UG 585 Section B.33
+MMIO_RO32(UART0_SR,   0xe000002c)
+MMIO_RW32(UART0_FIFO, 0xe0000030)
+MMIO_BITFIELD(UART_SR_TXEMPTY, 3)
 
 void uart_put_char(char c) {
     // Wait for the TX FIFO to be empty, ...
-    while(!(*UART0_SR & UART_SR_TXEMPTY));
+    while(MMIO_BIT_CLR(UART0_SR, UART_SR_TXEMPTY));
     // ... then write
     *UART0_FIFO = c;
 }

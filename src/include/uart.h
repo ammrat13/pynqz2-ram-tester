@@ -10,6 +10,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#include "mmio.h"
+
 // Print a single character
 void uart_put_char(char c);
 // Print a null-terminated string
