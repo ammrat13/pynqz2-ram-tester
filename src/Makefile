@@ -21,6 +21,9 @@ BOOTGENFLAGS := -arch zynq -w on
 .PHONY: all
 all: BOOT.BIN
 
+.PHONY: elf
+elf: $(TARGET).elf
+
 .PHONY: clean
 clean:
 	rm -fv BOOT.BIN $(TARGET).elf $(OFILES)
