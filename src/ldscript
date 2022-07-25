@@ -34,6 +34,7 @@ SECTIONS {
     .data : ALIGN(4) {
         *(.data*)
         *(.bss*)
+        *(.rodata*)
     } >dram :dram
 
     /* Stack */
