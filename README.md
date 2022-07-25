@@ -25,5 +25,13 @@ caches were disabled, though, so that's not a confounding factor.
 
 ## Usage
 
+This code was built and tested with the [Pynq Z2][1] development board. In
+theory, it should work with any Zynq 7000 system with UART0 connected. If it has
+less than 512 MiB of RAM, `CUR_ADDR_INIT` in `src/src/main.c` may be too high.
+Lower that to a point where you don't go off the end of DRAM and where you don't
+overwrite the existing code and data.
+
 See either `hdl/` or `src/` for instructions on building and using the
 peripheral or the code respectively.
+
+[1]: https://www.tulembedded.com/FPGA/ProductsPYNQ-Z2.html "TUL: Pynq Z2"
