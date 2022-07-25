@@ -59,7 +59,7 @@ void main(void) {
     uart_put_hex_32(BLOCKS_REM_INIT * 16);
     uart_put_string(" bytes\r\n");
 
-    uart_put_string("Host xferd (>=):  ");
+    uart_put_string("Host xferd:       ");
     uart_put_hex_32(poll_perfcount * POLL_INTERVAL * sizeof(uint32_t));
     uart_put_string(" bytes\r\n");
 
