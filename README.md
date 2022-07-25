@@ -23,7 +23,7 @@ In my testing, it seems like the PS's transfer rate is half that of the PL.
 However, other `ldr` and `str` instructions could mess with this metric. The
 caches were disabled, though, so that's not a confounding factor.
 
-# Usage
+## Usage
 
 See either `hdl/` or `src/` for instructions on building and using the
 peripheral or the code respectively.
