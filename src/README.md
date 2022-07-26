@@ -15,6 +15,7 @@ either requires `bootgen` to be in your path or for the `BOOTGEN` variable to be
 set appropriately. The BIF file looks in the `xilinx/` directory at the root of
 this repository for files. Specifically, it looks for `xilinx/fsbl.elf` as the
 first-stage bootloader, and for `xilinx/bitstream.bit` for the PL's bitstream.
+
 Alternatively, `make elf` can be used to build an ELF file.
 
 ## Running
@@ -25,5 +26,5 @@ Ensure that these peripherals are enabled when configuring the PS. I
 additionally enabled the SD card so I could boot from it, then I used the
 provided first-stage bootloader to initialize the board.
 
-The test takes a while to run. For me it took about 30 seconds. If you feel it's
+The test takes a while to run. For me it took about 20 seconds. If you feel it's
 taking too long, try reducing `BLOCKS_REM_INIT` in `src/main.c`.
