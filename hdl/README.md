@@ -62,7 +62,7 @@ the test in motion.
 #### `addr_update_mask`
 
 ```
-next_addr <= ((cur_addr) & (~addr_update_mask)) ^ ((cur_addr + 128) & (addr_update_mask))
+addr' <= (addr & ~addr_update_mask) ^ ((addr + increment) & addr_update_mask)
 ```
 
 When moving to the next block, the address is calculated as shown above. For

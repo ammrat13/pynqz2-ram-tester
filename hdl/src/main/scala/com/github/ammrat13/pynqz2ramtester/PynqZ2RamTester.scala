@@ -390,9 +390,16 @@ class PynqZ2RamTester extends Component {
         when(ram.ar.ready) { goto(recv) }
       }
       // Update address modulo the mask
+      // Convert the data width to bytes, then step by 16 bytes
       onExit {
-        cur_addr :=
-          ((cur_addr) & (~addr_update_mask)) ^ ((cur_addr + 128) & (addr_update_mask))
+        // Computation is done in two parts, ...
+        val top = UInt(32 bits)
+        val bot = UInt(32 bits)
+        cur_addr := (top & (~addr_update_mask)) ^ (bot & addr_update_mask)
+        // ... the part that stays the same ...
+        top := cur_addr
+        // ... and the part that's incremented
+        bot := cur_addr + 16 * (ram.config.dataWidth / 8)
       }
     }
 
