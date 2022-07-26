@@ -392,7 +392,7 @@ class PynqZ2RamTester extends Component {
       // Update address modulo the mask
       onExit {
         cur_addr :=
-          ((cur_addr) & (~addr_update_mask)) ^ ((cur_addr + 64) & (addr_update_mask))
+          ((cur_addr) & (~addr_update_mask)) ^ ((cur_addr + 128) & (addr_update_mask))
       }
     }
 

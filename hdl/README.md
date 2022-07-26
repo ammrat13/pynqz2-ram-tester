@@ -38,12 +38,46 @@ The peripheral's base address is currently hard-coded to be `0x4000_0000`. All
 the memory-mapped registers are 32-bit and are located at the following
 addresses:
 
-| Offset |      Register      |    Initial    |  R/W  |
+| Offset |      Register      | Initial Value |  R/W  |
 | :----: | :----------------- | ------------: | :---: |
 | `0x00` | `cur_addr`         | `0x1000_0000` |   W   |
 | `0x04` | `blocks_rem`       |           `0` |  RW   |
 | `0x08` | `addr_update_mask` | `0x000f_ffff` |   W   |
 | `0x10` | `cycles_taken`     |       -       |   R   |
 | `0x14` | `max_latency`      |       -       |   R   |
+
+#### `cur_addr`
+
+Internally used to keep track of the address the peripheral is currently reading
+from. Since it's write-only it functions to program the starting address of the
+memory buffer to test with. Must be reprogrammed after every test.
+
+#### `blocks_rem`
+
+Internally used to keep track of how many blocks need to be fetched before
+stopping. If it's zero, the peripheral is idle. When zero, can be written to
+tell the peripheral how many blocks to fetch. Writing a non-zero value with set
+the test in motion.
+
+#### `addr_update_mask`
+
+```
+next_addr <= ((cur_addr) & (~addr_update_mask)) ^ ((cur_addr + 128) & (addr_update_mask))
+```
+
+When moving to the next block, the address is calculated as shown above. For
+power-of-two address buffer sizes, this register should be set to one less than
+the size of the buffer. This way, accesses "wrap around" when the end of the
+buffer is reached.
+
+#### `cycles_taken`
+
+How many clock cycles the previous test took. This field only has meaning after
+a test is complete.
+
+#### `max_latency`
+
+The maximum number of clock cycles a single transfer took, from issue to
+recieving the last beat. This field only has meaning after a test is complete.
 
 [1]: https://github.com/SpinalHDL/SpinalHDL "GitHub: SpinalHDL/SpinalHDL"
