@@ -24,11 +24,11 @@ object PynqZ2RamTester {
     addressWidth = 32,
     useLen = true,
     useLast = true,
+    useCache = true,
     useId = false,
     useRegion = false,
     useBurst = false,
     useLock = false,
-    useCache = false,
     useSize = false,
     useQos = false,
     useResp = false,
@@ -67,6 +67,13 @@ object PynqZ2RamTester {
       new AttributeString(
         "X_INTERFACE_INFO",
         "xilinx.com:interface:aximm:1.0 axi_ram ARLEN"
+      )
+    ),
+    (
+      _.ar.payload.cache,
+      new AttributeString(
+        "X_INTERFACE_INFO",
+        "xilinx.com:interface:aximm:1.0 axi_ram ARCACHE"
       )
     ),
     (
@@ -260,8 +267,10 @@ class PynqZ2RamTester extends Component {
   // Some values for the RAM are hard-coded
   // * Accesses are privileged and secure
   // * Burst length is always 16
+  // * Allow the transaction to be modified
   ram.ar.payload.prot := B"001"
   ram.ar.payload.len := U"x0f"
+  ram.ar.payload.cache := B"0010"
 
   /** Registers we expose to the PS
     * @see
