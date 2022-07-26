@@ -56,18 +56,18 @@ void main(void) {
     uart_put_string("Finished test!\r\n");
 
     uart_put_string("Peripheral xferd: ");
-    uart_put_hex_32(BLOCKS_REM_INIT * 16);
-    uart_put_string(" bytes\r\n");
+    uart_put_hex_32(BLOCKS_REM_INIT);
+    uart_put_string(" 128-byte blocks\r\n");
 
     uart_put_string("Host xferd:       ");
-    uart_put_hex_32(poll_perfcount * POLL_INTERVAL * sizeof(uint32_t));
-    uart_put_string(" bytes\r\n");
+    uart_put_hex_32(poll_perfcount * POLL_INTERVAL);
+    uart_put_string(" 4-byte blocks\r\n");
 
     uart_put_string("Time taken:       ");
     uart_put_hex_32(*CYCLES_TAKEN);
-    uart_put_string(" cycles\r\n");
+    uart_put_string(" 100MHz cycles\r\n");
 
     uart_put_string("Max latency:      ");
     uart_put_hex_32(*MAX_LATENCY);
-    uart_put_string(" cycles\r\n");
+    uart_put_string(" 100MHz cycles\r\n");
 }
