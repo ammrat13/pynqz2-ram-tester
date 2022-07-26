@@ -20,7 +20,7 @@ object PynqZ2RamTester {
 
   /** Configuration for RAM AXI interface */
   val RAM_CONFIG: Axi4Config = Axi4Config(
-    dataWidth = 32,
+    dataWidth = 64,
     addressWidth = 32,
     useLen = true,
     useLast = true,
